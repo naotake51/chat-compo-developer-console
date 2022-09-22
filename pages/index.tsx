@@ -1,36 +1,53 @@
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
-import { useState } from 'react';
+import { gql, useMutation } from '@apollo/client';
 
-const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
-  cache: new InMemoryCache(),
-});
+interface LoginArgs {
+  email: string;
+  password: string;
+}
+
+interface LoginResult {
+  login: {
+    developer: {
+      email: string;
+    };
+    accessToken: string;
+  };
+}
 
 export default function Index() {
-  const [token, setToken] = useState('');
-
-  client
-    .mutate({
-      mutation: gql`
-        mutation {
-          login(loginInput: { email: "test@example.com", password: "password1234" }) {
-            developer {
-              email
-            }
-            accessToken
+  const [login, loginResult] = useMutation<LoginResult, LoginArgs>(
+    gql`
+      mutation ($email: String!, $password: String!) {
+        login(loginInput: { email: $email, password: $password }) {
+          developer {
+            email
           }
+          accessToken
         }
-      `,
-    })
-    .then((result) => setToken(result.data.login.accessToken))
-    .catch((err) => console.log('Error', err));
+      }
+    `,
+    {
+      variables: { email: 'test@example.com', password: 'password1234' },
+    },
+  );
+
+  const onClickLoginButton = async () => {
+    try {
+      await login();
+    } catch (err) {
+      alert('Login error');
+    }
+  };
 
   return (
     <div>
-      <div>Token: {token}</div>
-      {/* {users.map((user: any, i: number) => (
-        <div key={i}>{user.name}</div>
-      ))} */}
+      <button onClick={onClickLoginButton}>Login</button>
+      {loginResult.data && (
+        <>
+          <p>{loginResult.data.login.developer.email}</p>
+          <p>{loginResult.data.login.accessToken}</p>
+        </>
+      )}
     </div>
   );
 }
