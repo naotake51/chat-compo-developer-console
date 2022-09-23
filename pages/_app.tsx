@@ -1,6 +1,7 @@
 import '../styles/globals.css';
-import type { AppProps } from 'next/app';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import type { AppProps } from 'next/app';
+import React from 'react';
 import Layout from '../layouts/Layout';
 
 const client = new ApolloClient({
@@ -9,6 +10,7 @@ const client = new ApolloClient({
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
+  /* eslint-disable react/jsx-props-no-spreading */
   return (
     <ApolloProvider client={client}>
       <Layout>
