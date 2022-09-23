@@ -24,3 +24,11 @@ a {
     background: black;
   }
 }
+
+/*
+ * Tailwind CSS
+ * https://tailwindcss.com/docs/guides/nextjs
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
