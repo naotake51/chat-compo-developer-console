@@ -1,6 +1,0 @@
-{
-  "extends": [
-    "next",
-    "prettier" // https://nextjs.org/docs/basic-features/eslint#prettier
-  ]
-}
