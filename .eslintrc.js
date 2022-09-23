@@ -1,11 +1,13 @@
 module.exports = {
   plugins: [
     'react',
+    'tailwindcss',
   ],
   extends: [
     'next',
     'plugin:react/all',
-    'prettier' // https://nextjs.org/docs/basic-features/eslint#prettier
+    'plugin:tailwindcss/recommended',
+    'prettier', // https://nextjs.org/docs/basic-features/eslint#prettier
   ],
   rules: {
     'import/order': [
@@ -18,5 +20,6 @@ module.exports = {
     ],
     'react/jsx-filename-extension': [1, { 'extensions': ['.tsx', '.jsx'] }],
     'react/jsx-no-literals': 'off',
+    'react/jsx-max-depth': ['error', { 'max': 3 }],
   },
 }
