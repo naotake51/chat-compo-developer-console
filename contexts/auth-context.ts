@@ -1,9 +1,11 @@
-import { createContext, Dispatch, SetStateAction } from 'react';
-import { Auth } from '../types/auth';
+import { createContext } from 'react';
+import { useAuth } from '../modules/use-auth'
 
-type ContextData = {
-    auth: Auth | undefined
-    setAuth: Dispatch<SetStateAction<Auth | undefined>>
-}
+type UseAuthReturn = ReturnType<typeof useAuth>
 
-export const AuthContext = createContext<ContextData>({ auth: undefined, setAuth: () => { /** dummy */ } });
+export const AuthContext = createContext<UseAuthReturn>({
+    auth: undefined,
+    initialize: () => { /** dummy */ },
+    signUp: async () => { /** dummy */ },
+    signOut: async () => { /** dummy */ },
+});

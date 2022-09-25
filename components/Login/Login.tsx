@@ -1,58 +1,26 @@
-import { gql, useMutation } from '@apollo/client';
 import { InferProps } from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import Button from '../../atoms/Button/Button';
 import InputText from '../../atoms/Input/InputText';
 import { AuthContext } from '../../contexts/auth-context';
 
-type LoginArgs = {
-  email: string;
-  password: string;
-};
-
-type LoginResult = {
-  login: {
-    developer: {
-      email: string;
-    };
-    accessToken: string;
-  };
-};
-
 Login.propTypes = {};
 
 Login.defaultProps = {};
 
 export default function Login({}: InferProps<typeof Login.propTypes>) {
-  const { setAuth } = useContext(AuthContext);
+  const { signUp } = useContext(AuthContext);
 
   const [email, setEmail] = useState('test@example.com');
   const [password, setPassword] = useState('password1234');
 
-  const [login] = useMutation<LoginResult, LoginArgs>(
-    gql`
-      mutation ($email: String!, $password: String!) {
-        login(loginInput: { email: $email, password: $password }) {
-          developer {
-            email
-          }
-          accessToken
-        }
-      }
-    `,
-    { variables: { email, password } },
-  );
-
   const onLogin = useCallback(async () => {
     try {
-      const result = await login();
-      const loginResult = result.data!.login;
-      setAuth(loginResult);
-      localStorage.setItem('auth', JSON.stringify(loginResult));
+      await signUp(email, password);
     } catch (err) {
       alert('Login error');
     }
-  }, [login, setAuth]);
+  }, [email, password, signUp]);
 
   return (
     <div className='flex h-full w-full items-center justify-center'>
