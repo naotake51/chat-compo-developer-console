@@ -1,7 +1,7 @@
 import '../styles/globals.css';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import type { AppProps } from 'next/app';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/auth-context';
 import Layout from '../layouts/Layout';
 import { Auth } from '../types/auth';
@@ -11,8 +11,17 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+function getStoredAuth(): Auth | undefined {
+  const stored = localStorage.getItem('auth');
+  return stored ? JSON.parse(stored) : undefined;
+}
+
 function MyApp({ Component, pageProps }: AppProps) {
-  const [auth, setAuth] = useState<Auth | null>(null);
+  const [auth, setAuth] = useState<Auth>();
+
+  useEffect(() => {
+    setAuth(getStoredAuth());
+  }, []);
 
   const authValue = useMemo(() => {
     return { auth, setAuth };

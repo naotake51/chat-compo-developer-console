@@ -46,7 +46,9 @@ export default function Login({}: InferProps<typeof Login.propTypes>) {
   const onLogin = useCallback(async () => {
     try {
       const result = await login();
-      setAuth(result.data!.login);
+      const loginResult = result.data!.login;
+      setAuth(loginResult);
+      localStorage.setItem('auth', JSON.stringify(loginResult));
     } catch (err) {
       alert('Login error');
     }
