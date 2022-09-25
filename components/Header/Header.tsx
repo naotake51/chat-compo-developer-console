@@ -1,5 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { AuthContext } from '../../contexts/auth-context';
 
 export default function Header() {
-  return <header>Header</header>;
+  const { auth } = useContext(AuthContext);
+
+  return (
+    <header>
+      <p>Header</p>
+      {auth ? (
+        <div>
+          <p>{auth!.developer.email}</p>
+          <p>{auth!.accessToken}</p>
+        </div>
+      ) : null}
+    </header>
+  );
 }

@@ -1,32 +1,35 @@
 import { gql, useMutation } from '@apollo/client';
 import { InferProps } from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import Button from '../../atoms/Button/Button';
 import InputText from '../../atoms/Input/InputText';
+import { AuthContext } from '../../contexts/auth-context';
 
-interface LoginArgs {
+type LoginArgs = {
   email: string;
   password: string;
-}
+};
 
-interface LoginResult {
+type LoginResult = {
   login: {
     developer: {
       email: string;
     };
     accessToken: string;
   };
-}
+};
 
 Login.propTypes = {};
 
 Login.defaultProps = {};
 
 export default function Login({}: InferProps<typeof Login.propTypes>) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { setAuth } = useContext(AuthContext);
 
-  const [login, loginResult] = useMutation<LoginResult, LoginArgs>(
+  const [email, setEmail] = useState('test@example.com');
+  const [password, setPassword] = useState('password1234');
+
+  const [login] = useMutation<LoginResult, LoginArgs>(
     gql`
       mutation ($email: String!, $password: String!) {
         login(loginInput: { email: $email, password: $password }) {
@@ -42,11 +45,12 @@ export default function Login({}: InferProps<typeof Login.propTypes>) {
 
   const onLogin = useCallback(async () => {
     try {
-      await login();
+      const result = await login();
+      setAuth(result.data!.login);
     } catch (err) {
       alert('Login error');
     }
-  }, [login]);
+  }, [login, setAuth]);
 
   return (
     <div className='flex h-full w-full items-center justify-center'>
@@ -67,12 +71,6 @@ export default function Login({}: InferProps<typeof Login.propTypes>) {
           <Button label='Login' onClick={onLogin} />
         </div>
       </form>
-      {loginResult.data ? (
-        <>
-          <p>{loginResult.data.login.developer.email}</p>
-          <p>{loginResult.data.login.accessToken}</p>
-        </>
-      ) : null}
     </div>
   );
 }
