@@ -1,6 +1,6 @@
-import { ReactElement } from 'react';
-import Header from '../components/Header/Header';
+import React, { ReactElement } from 'react';
 import Footer from '../components/Footer/Footer';
+import Header from '../components/Header/Header';
 
 type LayoutProps = Required<{
   readonly children: ReactElement;
