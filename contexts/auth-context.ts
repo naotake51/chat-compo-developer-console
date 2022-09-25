@@ -6,6 +6,6 @@ type UseAuthReturn = ReturnType<typeof useAuth>
 export const AuthContext = createContext<UseAuthReturn>({
     auth: undefined,
     initialize: () => { /** dummy */ },
-    signUp: async () => { /** dummy */ },
+    signIn: async () => { /** dummy */ },
     signOut: async () => { /** dummy */ },
 });

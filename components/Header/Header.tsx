@@ -1,8 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
+import Button from '../../atoms/Button/Button';
 import { AuthContext } from '../../contexts/auth-context';
 
 export default function Header() {
-  const { auth } = useContext(AuthContext);
+  const { auth, signOut } = useContext(AuthContext);
+
+  const onSignOut = useCallback(() => signOut(), [signOut]);
 
   return (
     <header>
@@ -11,6 +14,7 @@ export default function Header() {
         <div>
           <p>{auth!.developer.email}</p>
           <p>{auth!.accessToken}</p>
+          <Button label='Sign out' onClick={onSignOut} />
         </div>
       ) : null}
     </header>

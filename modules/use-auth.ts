@@ -25,7 +25,7 @@ export function useAuth() {
         setAuth(stored ? JSON.parse(stored) : undefined);
     }
 
-    const signUp = async (email: string, password: string) => {
+    const signIn = async (email: string, password: string) => {
         const result = await client.mutate<LoginResult, LoginArgs>({
             mutation: gql`
                 mutation ($email: String!, $password: String!) {
@@ -53,7 +53,7 @@ export function useAuth() {
     return {
         auth,
         initialize,
-        signUp,
+        signIn,
         signOut,
     }
 }

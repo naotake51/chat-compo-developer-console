@@ -9,18 +9,18 @@ Login.propTypes = {};
 Login.defaultProps = {};
 
 export default function Login({}: InferProps<typeof Login.propTypes>) {
-  const { signUp } = useContext(AuthContext);
+  const { signIn } = useContext(AuthContext);
 
   const [email, setEmail] = useState('test@example.com');
   const [password, setPassword] = useState('password1234');
 
-  const onLogin = useCallback(async () => {
+  const onSignIn = useCallback(async () => {
     try {
-      await signUp(email, password);
+      await signIn(email, password);
     } catch (err) {
-      alert('Login error');
+      alert('Sign in error');
     }
-  }, [email, password, signUp]);
+  }, [email, password, signIn]);
 
   return (
     <div className='flex h-full w-full items-center justify-center'>
@@ -38,7 +38,7 @@ export default function Login({}: InferProps<typeof Login.propTypes>) {
           />
         </div>
         <div className='flex justify-end p-2'>
-          <Button label='Login' onClick={onLogin} />
+          <Button label='Sign in' onClick={onSignIn} />
         </div>
       </form>
     </div>
