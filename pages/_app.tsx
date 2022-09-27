@@ -1,6 +1,7 @@
 import '../styles/globals.css';
 import { ApolloProvider } from '@apollo/client';
 import type { AppProps } from 'next/app';
+import dynamic from 'next/dynamic';
 import React from 'react';
 import { AuthContext } from '../contexts/auth-context';
 import Layout from '../layouts/Layout';
@@ -22,4 +23,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp;
+export default dynamic(
+  {
+    loader: async () => MyApp,
+  },
+  { ssr: false },
+);
