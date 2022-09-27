@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
-import { useState } from 'react';
 import { Auth } from '../types/auth';
 import { client } from './apollo';
+import { useLocalStorage } from './use-local-storage';
 
 type LoginArgs = {
     email: string;
@@ -18,12 +18,7 @@ type LoginResult = {
 };
 
 export function useAuth() {
-    const [auth, setAuth] = useState<Auth>();
-
-    const initialize = () => {
-        const stored = localStorage.getItem('auth');
-        setAuth(stored ? JSON.parse(stored) : undefined);
-    }
+    const [auth, setAuth] = useLocalStorage<Auth | undefined>('auth', undefined);
 
     const signIn = async (email: string, password: string) => {
         const result = await client.mutate<LoginResult, LoginArgs>({
@@ -39,20 +34,16 @@ export function useAuth() {
             `,
             variables: { email, password }
         });
-        const loginResult = result.data!.login;
 
-        setAuth(loginResult);
-        localStorage.setItem('auth', JSON.stringify(loginResult));
+        setAuth(result.data!.login);
     }
 
     const signOut = () => {
         setAuth(undefined);
-        localStorage.removeItem('auth');
     }
 
     return {
         auth,
-        initialize,
         signIn,
         signOut,
     }
