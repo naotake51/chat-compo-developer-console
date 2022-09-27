@@ -13,7 +13,7 @@ Button.defaultProps = {
 export default function Button({ onClick, label }: InferProps<typeof Button.propTypes>) {
   return (
     <button
-      className='rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700'
+      className='m-2 rounded bg-blue-500 py-2 px-4 font-bold text-slate-50 hover:bg-blue-700'
       onClick={onClick ?? undefined}
       type='button'
     >

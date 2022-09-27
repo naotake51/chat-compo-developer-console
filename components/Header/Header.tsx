@@ -1,24 +1,12 @@
-import React, { useCallback, useContext } from 'react';
-import Button from '../../atoms/Button/Button';
-import { AuthContext } from '../../contexts/auth-context';
+import React from 'react';
 import Logo from './Logo';
+import UserMenu from './UserMenu';
 
 export default function Header() {
-  const { auth, signOut } = useContext(AuthContext);
-
-  const onSignOut = useCallback(() => signOut(), [signOut]);
-
   return (
-    <header>
+    <header className='flex h-14 items-center justify-between bg-teal-600'>
       <Logo />
-      <p>Header</p>
-      {auth ? (
-        <div>
-          <p>{auth!.developer.email}</p>
-          <p>{auth!.accessToken}</p>
-          <Button label='Sign out' onClick={onSignOut} />
-        </div>
-      ) : null}
+      <UserMenu />
     </header>
   );
 }
