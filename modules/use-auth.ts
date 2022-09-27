@@ -18,7 +18,7 @@ type LoginResult = {
 };
 
 export function useAuth() {
-    const [auth, setAuth] = useLocalStorage<Auth | undefined>('auth', undefined);
+    const [auth, setAuth] = useLocalStorage<Auth | null>('auth', null);
 
     const signIn = async (email: string, password: string) => {
         const result = await client.mutate<LoginResult, LoginArgs>({
@@ -39,7 +39,7 @@ export function useAuth() {
     }
 
     const signOut = () => {
-        setAuth(undefined);
+        setAuth(null);
     }
 
     return {
