@@ -94,9 +94,9 @@ export default function SignUp({}: InferProps<typeof SignUp.propTypes>) {
           <>
             <div className='p-2'>
               <InputText
-                autocomplete='email'
+                autoComplete='email'
                 label='email'
-                onChange={email.setValue}
+                onUpdate={email.setValue}
                 value={email.value}
               />
             </div>
@@ -114,7 +114,7 @@ export default function SignUp({}: InferProps<typeof SignUp.propTypes>) {
           <>
             <div className='p-2'>
               <InputText
-                autocomplete='email'
+                autoComplete='email'
                 label='email'
                 onChange={onUseAnotherEmail}
                 value={email.value}
@@ -122,9 +122,9 @@ export default function SignUp({}: InferProps<typeof SignUp.propTypes>) {
             </div>
             <div className='p-2'>
               <InputText
-                autocomplete='new-password'
+                autoComplete='new-password'
                 label='password'
-                onChange={password.setValue}
+                onUpdate={password.setValue}
                 placeholder='8 characters or more'
                 type='password'
                 value={password.value}
@@ -132,8 +132,9 @@ export default function SignUp({}: InferProps<typeof SignUp.propTypes>) {
             </div>
             <div className='p-2'>
               <InputText
+                autoComplete='new-password'
                 label='confirm password'
-                onChange={confirmPassword.setValue}
+                onUpdate={confirmPassword.setValue}
                 type='password'
                 value={confirmPassword.value}
               />

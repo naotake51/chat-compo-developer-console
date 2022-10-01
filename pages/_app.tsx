@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   } else {
     if (useAuthModule.auth) {
-      router.push('');
+      router.push('/');
       return null;
     }
   }

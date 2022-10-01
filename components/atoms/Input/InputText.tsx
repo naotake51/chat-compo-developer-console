@@ -1,37 +1,35 @@
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable react/no-unused-prop-types */
 import PropTypes, { InferProps } from 'prop-types';
-import React, { BaseSyntheticEvent, useCallback } from 'react';
+import React, { useCallback } from 'react';
+
+type InputDefaultProps = React.DetailedHTMLProps<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+>;
 
 InputText.propTypes = {
-  autocomplete: PropTypes.string,
   label: PropTypes.string.isRequired,
-  onChange: PropTypes.func,
-  placeholder: PropTypes.string,
-  type: PropTypes.oneOf(['text', 'password']),
-  value: PropTypes.string,
+  onUpdate: PropTypes.func,
+  value: PropTypes.string.isRequired,
 };
 
 InputText.defaultProps = {
-  autocomplete: 'off',
-  onChange: undefined,
-  placeholder: undefined,
-  type: 'text',
-  value: undefined,
+  onUpdate: undefined,
 };
 
-export default function InputText({
-  autocomplete,
-  label,
-  onChange,
-  placeholder,
-  type,
-  value,
-}: InferProps<typeof InputText.propTypes>) {
-  const __onChange = useCallback(
-    (event: BaseSyntheticEvent) => {
+export default function InputText(
+  props: InferProps<typeof InputText.propTypes> & Omit<InputDefaultProps, 'value'>,
+) {
+  const { label, onChange, onUpdate, ...defaultProps } = props;
+
+  const __onChange = useCallback<React.ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
       event.preventDefault();
-      onChange && onChange(event.target.value);
+      onChange && onChange(event);
+      onUpdate && onUpdate(event.target.value);
     },
-    [onChange],
+    [onUpdate],
   );
 
   return (
@@ -40,13 +38,9 @@ export default function InputText({
         {label}
       </label>
       <input
-        autoComplete={autocomplete ?? undefined}
+        {...defaultProps}
         className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500'
         onChange={__onChange}
-        placeholder={placeholder ?? undefined}
-        required
-        type={type ?? 'text'}
-        value={value ?? undefined}
       />
     </div>
   );

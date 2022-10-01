@@ -38,17 +38,17 @@ export default function SignIn({}: InferProps<typeof SignIn.propTypes>) {
       <form className='w-full max-w-md'>
         <div className='p-2'>
           <InputText
-            autocomplete='email'
+            autoComplete='email'
             label='email'
-            onChange={email.setValue}
+            onUpdate={email.setValue}
             value={email.value}
           />
         </div>
         <div className='p-2'>
           <InputText
-            autocomplete='new-password'
+            autoComplete='new-password'
             label='password'
-            onChange={password.setValue}
+            onUpdate={password.setValue}
             type='password'
             value={password.value}
           />
