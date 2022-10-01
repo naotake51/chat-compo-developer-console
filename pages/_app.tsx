@@ -13,8 +13,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const useAuthModule = useAuth();
 
-  if (router.asPath !== '/login' && !useAuthModule.auth) {
-    router.push('/login');
+  if (router.asPath !== '/sign-in' && !useAuthModule.auth) {
+    router.push('/sign-in');
   }
 
   /* eslint-disable react/jsx-props-no-spreading */

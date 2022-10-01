@@ -9,7 +9,7 @@ type LoginArgs = {
 };
 
 type LoginResult = {
-    login: {
+    signIn: {
         developer: {
             email: string;
         };
@@ -24,18 +24,18 @@ export function useAuth() {
         const result = await client.mutate<LoginResult, LoginArgs>({
             mutation: gql`
                 mutation ($email: String!, $password: String!) {
-                  login(loginInput: { email: $email, password: $password }) {
-                    developer {
-                      email
+                    signIn(signInInput: { email: $email, password: $password }) {
+                        developer {
+                          email
+                        }
+                        accessToken
                     }
-                    accessToken
-                  }
                 }
             `,
             variables: { email, password }
         });
 
-        setAuth(result.data!.login);
+        setAuth(result.data!.signIn);
     }
 
     const signOut = () => {
