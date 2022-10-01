@@ -1,11 +1,11 @@
 import React, { ReactElement } from 'react';
-import Header from '../components/Header/Header';
+import Header from '../organisms/Header/Header';
 
-type LayoutProps = Required<{
+type HasChildren = Required<{
   readonly children: ReactElement;
 }>;
 
-export default function Layout({ children }: LayoutProps) {
+export default function Template({ children }: HasChildren) {
   return (
     <>
       <Header />

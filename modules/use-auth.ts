@@ -38,6 +38,24 @@ export function useAuth() {
         setAuth(result.data!.signIn);
     }
 
+    const signUp = async (email: string, password: string, authEmailToken: string) => {
+        const result = await client.mutate<LoginResult, LoginArgs>({
+            mutation: gql`
+                mutation ($email: String!, $password: String!) {
+                    signIn(signInInput: { email: $email, password: $password }) {
+                        developer {
+                          email
+                        }
+                        accessToken
+                    }
+                }
+            `,
+            variables: { email, password }
+        });
+
+        setAuth(result.data!.signIn);
+    }
+
     const signOut = () => {
         setAuth(null);
     }
@@ -45,6 +63,7 @@ export function useAuth() {
     return {
         auth,
         signIn,
+        signUp,
         signOut,
     }
 }

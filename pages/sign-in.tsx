@@ -1,21 +1,24 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { InferProps } from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
-import Button from '../atoms/Button/Button';
-import InputText from '../atoms/Input/InputText';
+import Button from '../components/atoms/Button/Button';
+import InputText from '../components/atoms/Input/InputText';
 import { AuthContext } from '../contexts/auth-context';
 
-Login.propTypes = {};
+SignIn.propTypes = {};
 
-Login.defaultProps = {};
+SignIn.defaultProps = {};
 
-export default function Login({}: InferProps<typeof Login.propTypes>) {
+export default function SignIn({}: InferProps<typeof SignIn.propTypes>) {
   const router = useRouter();
 
   const { signIn } = useContext(AuthContext);
 
   const [email, setEmail] = useState('test@example.com');
   const [password, setPassword] = useState('password1234');
+
+  const isValid = email && password && password.length >= 8;
 
   const onSignIn = useCallback(async () => {
     try {
@@ -25,11 +28,11 @@ export default function Login({}: InferProps<typeof Login.propTypes>) {
     } catch (err) {
       alert('Sign in error');
     }
-  }, [email, password, signIn]);
+  }, [email, password, router, signIn]);
 
   return (
-    <div className='mt-6 flex h-full w-full items-center justify-center'>
-      <form className='max-w-md flex-1'>
+    <div className='mt-6 flex flex-col items-center'>
+      <form className='w-full max-w-md'>
         <div className='p-2'>
           <InputText autocomplete='email' label='email' onChange={setEmail} value={email} />
         </div>
@@ -43,9 +46,14 @@ export default function Login({}: InferProps<typeof Login.propTypes>) {
           />
         </div>
         <div className='flex justify-end p-2'>
-          <Button label='Sign in' onClick={onSignIn} />
+          <Button disabled={!isValid} label='Sign in' onClick={onSignIn} />
         </div>
       </form>
+      <div>
+        <Link href='/sign-up'>
+          <a>create an account?</a>
+        </Link>
+      </div>
     </div>
   );
 }

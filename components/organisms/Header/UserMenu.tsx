@@ -2,7 +2,7 @@
 import { Menu, Transition } from '@headlessui/react';
 import { InferProps } from 'prop-types';
 import React, { Fragment, useCallback, useContext } from 'react';
-import { AuthContext } from '../../contexts/auth-context';
+import { AuthContext } from '../../../contexts/auth-context';
 import UserImage from './UserImage';
 import UserMenuItem from './UserMenuItem';
 
