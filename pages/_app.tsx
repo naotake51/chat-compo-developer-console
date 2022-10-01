@@ -9,15 +9,24 @@ import { AuthContext } from '../contexts/auth-context';
 import { client } from '../modules/apollo';
 import { useAuth } from '../modules/use-auth';
 
-const authFreePaths: readonly string[] = ['/sign-in', '/sign-up'] as const;
+function isRequiredSignUp(path: string) {
+  return !['/sign-in', '/sign-up'].includes(path);
+}
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const useAuthModule = useAuth();
 
-  const validPath = authFreePaths.includes(router.asPath) || useAuthModule.auth;
-  if (!validPath) {
-    router.push('/sign-in');
+  if (isRequiredSignUp(router.asPath)) {
+    if (!useAuthModule.auth) {
+      router.push('/sign-in');
+      return null;
+    }
+  } else {
+    if (useAuthModule.auth) {
+      router.push('/');
+      return null;
+    }
   }
 
   /* eslint-disable react/jsx-props-no-spreading */
