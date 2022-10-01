@@ -1,10 +1,12 @@
+/* eslint-disable react/jsx-handler-names */
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { InferProps } from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext } from 'react';
 import Button from '../components/atoms/Button/Button';
 import InputText from '../components/atoms/Input/InputText';
 import { AuthContext } from '../contexts/auth-context';
+import { useInputText } from '../modules/use-input';
 
 SignIn.propTypes = {};
 
@@ -15,16 +17,17 @@ export default function SignIn({}: InferProps<typeof SignIn.propTypes>) {
 
   const { signIn } = useContext(AuthContext);
 
-  const [email, setEmail] = useState('test@example.com');
-  const [password, setPassword] = useState('password1234');
+  const email = useInputText('test@example.com');
 
-  const isValid = email && password && password.length >= 8;
+  const password = useInputText('password1234');
+
+  const isValid = email.isNotEmpty && password.isNotEmpty && password.value.length >= 8;
 
   const onSignIn = useCallback(async () => {
     try {
-      await signIn(email, password);
+      await signIn(email.value, password.value);
 
-      router.push('/');
+      router.push('');
     } catch (err) {
       alert('Sign in error');
     }
@@ -34,15 +37,20 @@ export default function SignIn({}: InferProps<typeof SignIn.propTypes>) {
     <div className='mt-6 flex flex-col items-center'>
       <form className='w-full max-w-md'>
         <div className='p-2'>
-          <InputText autocomplete='email' label='email' onChange={setEmail} value={email} />
+          <InputText
+            autocomplete='email'
+            label='email'
+            onChange={email.setValue}
+            value={email.value}
+          />
         </div>
         <div className='p-2'>
           <InputText
             autocomplete='new-password'
             label='password'
-            onChange={setPassword}
+            onChange={password.setValue}
             type='password'
-            value={password}
+            value={password.value}
           />
         </div>
         <div className='flex justify-end p-2'>

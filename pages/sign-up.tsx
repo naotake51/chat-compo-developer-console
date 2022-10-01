@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-handler-names */
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { InferProps } from 'prop-types';
@@ -7,6 +8,7 @@ import InputCode from '../components/atoms/Input/InputCode';
 import InputText from '../components/atoms/Input/InputText';
 import Modal from '../components/molecules/Modal/Modal';
 import { AuthContext } from '../contexts/auth-context';
+import { useInputCode, useInputText } from '../modules/use-input';
 import { useModal } from '../modules/use-modal';
 
 SignUp.propTypes = {};
@@ -25,59 +27,47 @@ export default function SignUp({}: InferProps<typeof SignUp.propTypes>) {
 
   const { signUp } = useContext(AuthContext);
 
-  const codeModal = useModal();
+  const codeModal = useModal({
+    beforeOpen: () => {
+      code.initialize();
+    },
+  });
 
   const [authEmail, setAuthEmail] = useState<AuthEmailToken | null>(null);
 
-  const [email, setEmail] = useState('');
+  const email = useInputText();
 
-  const initCode = [...Array(CODE_LENGTH)].map((_) => '');
-  const [code, setCode] = useState(initCode);
+  const password = useInputText();
 
-  const [password, setPassword] = useState('');
+  const confirmPassword = useInputText();
 
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const isConfirmed = password.value === confirmPassword.value;
 
-  const onSendCode = useCallback(() => {
-    codeModal.open();
-  }, [codeModal]);
+  const isValid = email.isNotEmpty && password.isNotEmpty && isConfirmed;
 
-  const onChangeCode = useCallback(
-    (newValue: string[]) => {
-      setCode(newValue);
+  const code = useInputCode(CODE_LENGTH, {
+    beforeUpdate: (newValue) => {
+      const codeString = newValue.join('');
+      if (codeString.length !== CODE_LENGTH) return;
 
-      const code = newValue.join('');
-      if (code.length === CODE_LENGTH) {
-        try {
-          // TODO:: Send code
-          if (code !== 'ABCDEF') {
-            throw new Error('Send Code Error');
-          }
-
-          codeModal.close();
-          setCode(initCode);
-
-          setAuthEmail({ email: email, token: '' });
-        } catch (e) {
-          console.log('Invalid Code');
-          setCode(initCode);
+      try {
+        // TODO:: Confirm code
+        if (codeString !== 'ABCDEF') {
+          throw new Error('mismatch');
         }
+        codeModal.close();
+        setAuthEmail({ email: email.value, token: '' });
+      } catch (e) {
+        const message = e instanceof Error ? e.message : 'system error';
+        code.setErrorMessage(message);
       }
     },
-    [codeModal, email, initCode],
-  );
+  });
 
-  const onSignUp = useCallback(async () => {
-    try {
-      if (!authEmail) throw new Error('unexpected');
-
-      await signUp(email, password, authEmail.token);
-
-      router.push('/');
-    } catch (err) {
-      alert('Sign up error');
-    }
-  }, [authEmail, email, password, router, signUp]);
+  const onSendCode = useCallback(() => {
+    // TODO:: Send Code
+    codeModal.open();
+  }, [codeModal]);
 
   const onUseAnotherEmail = useCallback(() => {
     if (confirm('Use another email?')) {
@@ -85,8 +75,17 @@ export default function SignUp({}: InferProps<typeof SignUp.propTypes>) {
     }
   }, []);
 
-  const isConfirmed = password === confirmPassword;
-  const isValid = email && password && isConfirmed;
+  const onSignUp = useCallback(async () => {
+    try {
+      if (!authEmail) throw new Error('unexpected');
+
+      await signUp(email.value, password.value, authEmail.token);
+
+      router.push('/');
+    } catch (err) {
+      alert('Sign up error');
+    }
+  }, [authEmail, email, password, router, signUp]);
 
   return (
     <div className='mt-6 flex flex-col items-center'>
@@ -94,13 +93,21 @@ export default function SignUp({}: InferProps<typeof SignUp.propTypes>) {
         {!authEmail ? (
           <>
             <div className='p-2'>
-              <InputText autocomplete='email' label='email' onChange={setEmail} value={email} />
+              <InputText
+                autocomplete='email'
+                label='email'
+                onChange={email.setValue}
+                value={email.value}
+              />
             </div>
             <div className='flex justify-end p-2'>
-              <Button disabled={!email} label='Send code' onClick={onSendCode} />
+              <Button disabled={email.isEmpty} label='Send code' onClick={onSendCode} />
             </div>
             <Modal modal={codeModal} title='Please enter code'>
-              <InputCode onChange={onChangeCode} value={code} />
+              <>
+                <div className='h-8 text-red-500'>{code.errorMessage}</div>
+                <InputCode onChange={code.setValue} value={code.value} />
+              </>
             </Modal>
           </>
         ) : (
@@ -110,25 +117,25 @@ export default function SignUp({}: InferProps<typeof SignUp.propTypes>) {
                 autocomplete='email'
                 label='email'
                 onChange={onUseAnotherEmail}
-                value={email}
+                value={email.value}
               />
             </div>
             <div className='p-2'>
               <InputText
                 autocomplete='new-password'
                 label='password'
-                onChange={setPassword}
+                onChange={password.setValue}
                 placeholder='8 characters or more'
                 type='password'
-                value={password}
+                value={password.value}
               />
             </div>
             <div className='p-2'>
               <InputText
                 label='confirm password'
-                onChange={setConfirmPassword}
+                onChange={confirmPassword.setValue}
                 type='password'
-                value={confirmPassword}
+                value={confirmPassword.value}
               />
             </div>
             <div className='flex justify-end p-2'>

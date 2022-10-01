@@ -1,11 +1,22 @@
 import { useCallback, useState } from "react";
 
-export const useModal = function () {
+type UseModalParam = {
+    beforeOpen?: () => void
+    beforeClose?: () => void
+}
+
+export const useModal = function ({ beforeOpen, beforeClose }: UseModalParam) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
-    const open = useCallback(() => setIsOpen(true), []);
+    const open = useCallback(() => {
+        beforeOpen && beforeOpen()
+        setIsOpen(true)
+    }, [beforeOpen]);
 
-    const close = useCallback(() => setIsOpen(false), []);
+    const close = useCallback(() => {
+        beforeClose && beforeClose()
+        setIsOpen(false)
+    }, [beforeClose]);
 
     return { isOpen, open, close };
 };
